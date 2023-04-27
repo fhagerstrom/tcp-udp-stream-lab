@@ -9,8 +9,8 @@ startTime = time.time() # Measure execution time.
 # A packet size is roughly 1455 bytes
 PACKET_SIZE = 1475 # 2 bytes buffer for sequence number, 1455 for message, 16 for UDP header
 TCP_IP = '127.0.0.1' # CHECK IP ON WHICH PC SHOULD ACT AS SERVER BEFORE RUNNING
-PORT_NUMBER = 5010
-NUMBER_OF_MESSAGES = 1000
+PORT_NUMBER = 5005
+NUMBER_OF_MESSAGES = 100
 
 print("IP address:", TCP_IP)
 print ("Port number:", str(PORT_NUMBER), "\n")
@@ -19,6 +19,7 @@ listeningAddress = (TCP_IP, PORT_NUMBER)
 
 # Create server socket using IPv4 and TCP scheme
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serverSocket.settimeout(10)
 
 # Bind socket to IP address and port number
 serverSocket.bind(listeningAddress)
@@ -37,39 +38,37 @@ recievedMessages = 0
 # Open a file where we log if the sequence number was higher / lower than expected
 expectedSequenceFile = open("StreamLogs/StreamSeqLog.txt", "w")
 
+# Wait for incoming messages.
+connectionSocket, address = serverSocket.accept()
+
 # Recieve the messages from the client
 while recievedMessages < NUMBER_OF_MESSAGES:
-    # Set timeout for 5 seconds
-    ready = select.select([serverSocket], [], [], 5)
+    # print("Recieving from client...")
+    # Recieve messages and address from client
+    msg = connectionSocket.recv(PACKET_SIZE)
 
-    if ready[0]:
-        # Wait for incoming messages.
-        clientSocket, address = serverSocket.accept()
+    # print("Packet sequence number being extracted...")
+    # Extract packet sequence number of the message to keep track of incoming packets
+    packetSeqNumber = int.from_bytes(msg[:2], byteorder="big")
 
-        # Recieve messages and address from client
-        msg = serverSocket.recv(PACKET_SIZE)
+    # Check expected sequence number
+    if packetSeqNumber != expectedSeqNumber:
+        checkMsg = "Warning: Received message with sequence number %d, expected %d\n" % (packetSeqNumber, expectedSeqNumber)
+        expectedSequenceFile.write(checkMsg)
 
-        # Extract packet sequence number of the message to keep track of incoming packets
-        packetSeqNumber = int.from_bytes(msg[:2], byteorder="big")
+    # print("Decoding message...")
+    msgText = msg[2:].decode() # Slice the message from client since the sequence number comes first
 
-        # Check expected sequence number
-        if packetSeqNumber != expectedSeqNumber:
-            checkMsg = "Warning: Received message with sequence number %d, expected %d\n" % (packetSeqNumber, expectedSeqNumber)
-            expectedSequenceFile.write(checkMsg)
+    # Print where the message comes from, which packet sequence number it is, and the message itself
+    print("Received message from %s\nSequence number: %d\nMessage: \%s\"" % (address, packetSeqNumber, msgText))
 
-        msgText = msg[2:].decode() # Slice the message from client since the sequence number comes first
+    expectedSeqNumber += 1 # Increment sequence number after receieved message
+    expectedSequenceFile.write(str(expectedSeqNumber) + "\n")
 
-        # Print where the message comes from, which packet sequence number it is, and the message itself
-        print("Received message from %s\nSequence number: %d\nMessage: \%s\"" % (address, packetSeqNumber, msgText))
+    recievedMessages += 1
 
-        expectedSeqNumber += 1 # Increment sequence number after receieved message
-        expectedSequenceFile.write(str(expectedSeqNumber) + "\n")
-
-        recievedMessages += 1
-
-    else:
-        print("Timeout reached. Exiting...")
-        sys.exit()
+    # Send response to client
+    connectionSocket.send(b"Message received by server.")
 
 # Close log file and socket.
 expectedSequenceFile.close()

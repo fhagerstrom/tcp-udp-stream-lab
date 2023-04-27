@@ -6,7 +6,7 @@ startTime = time.time() # Measure execution time for fun
 PACKET_SIZE = 1455 # A message packet is roughly 1455 bytes
 UDP_IP = '192.168.1.75' # CHECK IP ON WHICH PC SHOULD ACT AS SERVER BEFORE RUNNING!
 PORT_NUMBER = 5005
-NUMBER_OF_MESSAGES = 1000
+NUMBER_OF_MESSAGES = 100000
 MESSAGE = b"x" * PACKET_SIZE
 # MEESAGES_PER_SECOND = 50
 
