@@ -4,23 +4,24 @@ import time
 startTime = time.time() # Measure execution time for fun
 
 PACKET_SIZE = 1455 # A message packet is roughly 1455 bytes
-IP_ADDRESS = '127.0.0.1' # CHECK IP ON WHICH PC SHOULD ACT AS CLIENT BEFORE RUNNING!
+IP_ADDRESS = '192.168.1.75' # CHECK IP ON WHICH PC SHOULD ACT AS SERVER BEFORE RUNNING!
 PORT_NUMBER = 9999
-NUMBER_OF_MESSAGES = 10
+NUMBER_OF_MESSAGES = 200
 MESSAGE = b"x" * PACKET_SIZE
-SLEEP_TIMER = 1
+MEESAGES_PER_SECOND = 10
 
 print("IP address:", IP_ADDRESS)
 print ("Port number:", str(PORT_NUMBER), "\n")
 
 sendingAddress = (IP_ADDRESS, PORT_NUMBER) # Placeholder for IP / Port number
 packetSeqNumber = 0
+sentMessages = 0
 
 # Create socket using IPv4 and UDP scheme
 datagramSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# Send messages with a for loop.
-for i in range(NUMBER_OF_MESSAGES):
+# While loop to send messages
+while sentMessages < NUMBER_OF_MESSAGES:
     # Create message, convert sequence number to bytes
     seqNumBytes = packetSeqNumber.to_bytes(2, byteorder="big")
     
@@ -33,7 +34,9 @@ for i in range(NUMBER_OF_MESSAGES):
     packetSeqNumber += 1
 
     # Send messages within a fixed time interval, specified by SLEEP_TIMER
-    time.sleep(SLEEP_TIMER)
+    time.sleep(1 / MEESAGES_PER_SECOND)
+
+    sentMessages += 1 # Increment the amount of sent messages
 
     # print(msg) # Testprint the messages
 
