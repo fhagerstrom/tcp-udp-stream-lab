@@ -7,7 +7,7 @@ startTime = time.time() # Measure execution time.
 
 # Define fixed variables such as packet size, IP, port number, number of messages, etc.
 # A packet size is roughly 1455 bytes
-PACKET_SIZE = 1473 # 2 bytes buffer for sequence number, 1455 for message, 16 for UDP header
+PACKET_SIZE = 1475 # 2 bytes buffer for sequence number, 1455 for message, 16 for UDP header
 UDP_IP = '127.0.0.1' # CHECK IP ON WHICH PC SHOULD ACT AS SERVER BEFORE RUNNING
 PORT_NUMBER = 5005
 NUMBER_OF_MESSAGES = 3000
