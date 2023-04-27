@@ -1,7 +1,5 @@
 import socket
 import time
-import select
-import sys
 
 startTime = time.time() # Measure execution time.
 
@@ -10,7 +8,7 @@ startTime = time.time() # Measure execution time.
 PACKET_SIZE = 1475 # 2 bytes buffer for sequence number, 1455 for message, 16 for UDP header
 TCP_IP = '127.0.0.1' # CHECK IP ON WHICH PC SHOULD ACT AS SERVER BEFORE RUNNING
 PORT_NUMBER = 5005
-NUMBER_OF_MESSAGES = 100
+NUMBER_OF_MESSAGES = 1000
 
 print("IP address:", TCP_IP)
 print ("Port number:", str(PORT_NUMBER), "\n")

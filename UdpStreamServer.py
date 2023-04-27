@@ -1,7 +1,5 @@
 import socket
 import time
-import select
-import sys
 
 startTime = time.time() # Measure execution time.
 
