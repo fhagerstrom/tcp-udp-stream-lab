@@ -5,10 +5,10 @@ startTime = time.time() # Measure execution time for fun
 
 PACKET_SIZE = 1455 # A message packet is roughly 1455 bytes
 IP_ADDRESS = '192.168.1.75' # CHECK IP ON WHICH PC SHOULD ACT AS SERVER BEFORE RUNNING!
-PORT_NUMBER = 9999
-NUMBER_OF_MESSAGES = 200
+PORT_NUMBER = 5005
+NUMBER_OF_MESSAGES = 3000
 MESSAGE = b"x" * PACKET_SIZE
-MEESAGES_PER_SECOND = 10
+# MEESAGES_PER_SECOND = 50
 
 print("IP address:", IP_ADDRESS)
 print ("Port number:", str(PORT_NUMBER), "\n")
@@ -34,7 +34,7 @@ while sentMessages < NUMBER_OF_MESSAGES:
     packetSeqNumber += 1
 
     # Send messages within a fixed time interval, specified by SLEEP_TIMER
-    time.sleep(1 / MEESAGES_PER_SECOND)
+    time.sleep(0)
 
     sentMessages += 1 # Increment the amount of sent messages
 
